@@ -1,0 +1,16 @@
+{
+	"name": "gamelog_analyzer",
+	"version": "0.0.1",
+	"description": "A «Heads & Tails» game log analyze app.",
+	"main": "gamelog_analyzer.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Yury Timofeev",
+	"license": "MIT",
+	"dependencies": {
+		"cli": "*",
+		"cli-color": "*",
+		"moment": "*"
+	}
+}
