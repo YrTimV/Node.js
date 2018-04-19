@@ -110,7 +110,7 @@ console.log("Flawless " + clc.bold.cyanBright("wins") + ": " + clcValue(gameSess
 console.log("Games " + clc.bold.cyanBright("lost") + ": " + clcValue(gameSessionStats.games.lost));
 console.log("Longest " + clc.bold.cyanBright("lose") + " streak: " + clcValue(gameSessionStats.games.loseStreak));
 console.log("Total " + clc.bold.cyanBright("loses") + ": " + clcValue(gameSessionStats.games.totalLoses));
-console.log("Games " + clc.bold.cyanBright("win/loss ration") + ": " + clcValue(round(gameSessionStats.games.won / (gameSession.length - 1 - gameSessionStats.games.draw) * 100, 2) + "%"));
+console.log("Games " + clc.bold.cyanBright("win/loss ratio") + ": " + clcValue(round(gameSessionStats.games.won / (gameSession.length - 1 - gameSessionStats.games.draw) * 100, 2) + "%"));
 console.log("Game session end: " + clcValue(gameSessionEndTime.format("YYYY/MM/DD HH:mm:ss")));
 
 process.exit(-1);
