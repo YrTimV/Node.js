@@ -9,8 +9,8 @@
 	"author": "Yury Timofeev",
 	"license": "MIT",
 	"dependencies": {
-		"cli": "*",
-		"cli-color": "*",
-		"moment": "*"
+		"cli": "^1.0.1",
+		"cli-color": "^1.2.0",
+		"moment": "^2.22.1"
 	}
 }

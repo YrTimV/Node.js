@@ -9,7 +9,10 @@
 	"author": "Yury Timofeev",
 	"license": "MIT",
 	"dependencies": {
-		"ansi": "^0.3.1"
+		"ansi": "^0.3.1",
+		"beepbeep": "^1.2.2",
+		"os": "^0.1.1",
+		"cli-color": "^1.2.0"
 	},
 	"repository": {
 		"type": "git",
