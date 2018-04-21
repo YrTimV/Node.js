@@ -2,7 +2,7 @@ const cli = require("cli");
 const clc = require("cli-color");
 const cliOptions = {
 	logFile: ["l", "Write game log to a JSON file FILE.", "file"],
-	toss: ["t", "Number of coin toss to score.", "toss"]
+	toss: ["t", "Number of coin tosses for one game round.", "toss"]
 };
 const readLine = require("readline");
 const rlOptions = { input: process.stdin, output: process.stdout };
