@@ -6,7 +6,6 @@ const cliOptions = {
 };
 const readLine = require("readline");
 const rlOptions = { input: process.stdin, output: process.stdout };
-const moment = require("moment");
 let rl = readLine.createInterface(rlOptions);
 
 cli.setApp("A «Heads & Tails» game", "0.0.1");
@@ -15,18 +14,20 @@ cli.parse(cliOptions);
 
 // A whole game session and game session data.
 // First element is a game session start time.
-const gameSession = [moment()];
+const gameSession = [new Date()];
 let gameData;
 
 // Log current game into a JSON file.
 function gameSessionLog() {
 	// Set log file name as when the game session started or a custom name.
 	const logDirName = "logs";
-	const logFileName = logDirName + "\\" + (cli.options.logFile ? cli.options.logFile : gameSession[0].format("YYYY-MM-DD_HH-mm-ss")) + ".json";
+	const localeTime = gameSession[0].toLocaleDateString() + "_" + gameSession[0].toLocaleTimeString().replace(/:/g, "-");
+	const logFileName = logDirName + "\\" +
+			(cli.options.logFile ? cli.options.logFile : localeTime) + ".json";
 	const fs = require("fs");
 	
 	// Last game session element is a game session end time.
-	gameSession.push(moment());
+	gameSession.push(new Date());
 	
 	try {
 		if (!fs.existsSync(logDirName)) {
@@ -34,7 +35,8 @@ function gameSessionLog() {
 		}
 		fs.writeFileSync(logFileName, JSON.stringify(gameSession), { encoding: "utf8" });
 
-		console.log("\nYour game session was saved into a file «" + clc.bold.yellowBright(logFileName) + "».");
+		console.log("\nYour game session was saved into a file «" +
+						clc.bold.yellowBright(logFileName) + "».");
 	}
 	catch (err) {
 		console.error(err);
@@ -48,7 +50,8 @@ function gameOver() {
 	// Store current game data into a session log.
 	gameSession.push(gameData);
 	
-	rl.question("\nWould you like to play again (" + clc.bold.yellowBright("y") + ")? ", (answer) => {
+	rl.question("\nWould you like to play again (" + clc.bold.yellowBright("y")
+					+ ")? ", (answer) => {
 		if (!answer || /^y$/i.test(answer)) {
 			// Start a new game in the current session (async).
 			setTimeout(newGame, 0);
@@ -64,7 +67,8 @@ function gameOver() {
 }
 
 function gameStatus() {
-	console.log("\nGame status: you guessed " + clc.bold.yellowBright(gameData.playerGuesses) + " time(s) out of " + clc.bold.yellowBright(gameData.coinTossRounds));
+	console.log("\nGame status: you guessed " + clc.bold.yellowBright(gameData.playerGuesses) +
+					" time(s) out of " + clc.bold.yellowBright(gameData.coinTossRounds));
 }
 
 const newGame = () => {
@@ -80,7 +84,11 @@ const newGame = () => {
 	// Clear the terminal screen.
 	process.stdout.write(clc.erase.screen);
 	
-	console.log("Welcome to the game «" + clc.bold.yellowBright.bgBlueBright("Toss a coin") + "» (game #" + clc.bold.cyanBright(gameSession.length) + ").\nNumber of toss rounds: " + clc.bold.yellowBright(gameData.coinTossRounds));
+	console.log("Welcome to the game «" +
+					clc.bold.yellowBright.bgBlueBright("Toss a coin") +
+					"» (game #" + clc.bold.cyanBright(gameSession.length) +
+					").\nNumber of toss rounds: " +
+					clc.bold.yellowBright(gameData.coinTossRounds));
 	
 	const userInputText =
 		"\nChoose " +
@@ -139,6 +147,7 @@ const newGame = () => {
 
 			// Start next round (async call).
 			setTimeout(question, 0);
+			
 			return;
 		}
 

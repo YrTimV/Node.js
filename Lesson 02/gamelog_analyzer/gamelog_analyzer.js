@@ -1,7 +1,6 @@
 const cli = require("cli");
 const clc = require("cli-color");
 const clcValue = clc.bold.yellowBright;
-const moment = require("moment");
 const cliOptions = {
 	logFile: ["l", "Read game log JSON file FILE.", "file"]
 };
@@ -22,7 +21,8 @@ if (!cli.options.logFile) {
 }
 
 if (!fs.existsSync(cli.options.logFile)) {
-	console.error(clc.bold.redBright("Log file «" + cli.options.logFile + "» doesn't exist!"));
+	console.error(clc.bold.redBright(
+		"Log file «" + cli.options.logFile + "» doesn't exist!"));
 	
 	process.exit(-1);
 }
@@ -32,7 +32,9 @@ const gameSession = JSON.parse(fs.readFileSync(cli.options.logFile, "utf8"));
 
 // Perform a simple validation of the game session object.
 if (!Array.isArray(gameSession)) {
-	console.error(clc.bold.redBright("Log file «" + cli.options.logFile + "» doesn't contain valid game session data!"));
+	console.error(clc.bold.redBright(
+		"Log file «" + cli.options.logFile +
+		"» doesn't contain valid game session data!"));
 	
 	process.exit(-1);
 }
@@ -41,8 +43,8 @@ if (!Array.isArray(gameSession)) {
 // Lets assume for now we have a valid game session object.
 
 // Analyze game session data.
-const gameSessionStartTime = moment(gameSession[0]);
-const gameSessionEndTime = moment(gameSession[gameSession.length - 1]);
+let gameSessionStartTime = new Date(gameSession[0]);
+let gameSessionEndTime = new Date(gameSession[gameSession.length - 1]);
 const gameSessionData = gameSession.slice(1, gameSession.length - 1);
 let gameSessionStats = {
 	totalRounds: 0,
@@ -59,6 +61,12 @@ let gameSessionStats = {
 	}
 };
 
+gameSessionStartTime = gameSessionStartTime.toLocaleDateString() + " " +
+	gameSessionStartTime.toLocaleTimeString();
+
+gameSessionEndTime = gameSessionEndTime.toLocaleDateString() + " " +
+	gameSessionEndTime.toLocaleTimeString();
+
 for (const gameData of gameSessionData) {
 	let wins = 0, winStreak = 0;
 	let loses = 0, loseStreak = 0;
@@ -71,12 +79,14 @@ for (const gameData of gameSessionData) {
 		if (tossResult.tossResult === tossResult.playerGuess) {
 			winStreak++;
 			wins++;
-			gameSessionStats.games.loseStreak = Math.max(gameSessionStats.games.loseStreak, loseStreak);
+			gameSessionStats.games.loseStreak = Math.max(
+				gameSessionStats.games.loseStreak, loseStreak);
 			loseStreak = 0;
 		} else if (tossResult.tossResult) {
 			loseStreak++;
 			loses++;
-			gameSessionStats.games.winStreak = Math.max(gameSessionStats.games.winStreak, winStreak);
+			gameSessionStats.games.winStreak = Math.max(
+				gameSessionStats.games.winStreak, winStreak);
 			winStreak = 0;
 		} else {
 			gameSessionStats.coinOnTheEdge++;
@@ -98,20 +108,38 @@ for (const gameData of gameSessionData) {
 	}
 }
 
-console.log("Game session start: " + clcValue(gameSessionStartTime.format("YYYY/MM/DD HH:mm:ss")));
-console.log("Games played during session: " + clcValue(gameSession.length - 2));
-console.log("Total rounds played: " + clcValue(gameSessionStats.totalRounds));
-console.log("Player guesses: " + clcValue(gameSessionStats.playerGuesses));
-console.log("Coins on the edge: " + clcValue(gameSessionStats.coinsOnTheEdge));
-console.log("Games are " + clc.bold.cyanBright("draw") + ": " + clcValue(gameSessionStats.games.draw));
-console.log("Games " + clc.bold.cyanBright("won") + ": " + clcValue(gameSessionStats.games.won));
-console.log("Longest " + clc.bold.cyanBright("win") + " streak: " + clcValue(gameSessionStats.games.winStreak));
-console.log("Flawless " + clc.bold.cyanBright("wins") + ": " + clcValue(gameSessionStats.games.flawlessWins));
-console.log("Games " + clc.bold.cyanBright("lost") + ": " + clcValue(gameSessionStats.games.lost));
-console.log("Longest " + clc.bold.cyanBright("lose") + " streak: " + clcValue(gameSessionStats.games.loseStreak));
-console.log("Total " + clc.bold.cyanBright("loses") + ": " + clcValue(gameSessionStats.games.totalLoses));
-console.log("Games " + clc.bold.cyanBright("win/loss ratio") + ": " + clcValue(round(gameSessionStats.games.won / (gameSession.length - 1 - gameSessionStats.games.draw) * 100, 2) + "%"));
-console.log("Game session end: " + clcValue(gameSessionEndTime.format("YYYY/MM/DD HH:mm:ss")));
+const gameWonLoseRatio = round(
+	gameSessionStats.games.won /
+	(gameSession.length - 1 - gameSessionStats.games.draw) * 100, 2);
+
+console.log("Game session start: " +
+				clcValue(gameSessionStartTime));
+console.log("Games played during session: " +
+				clcValue(gameSession.length - 2));
+console.log("Total rounds played: " +
+				clcValue(gameSessionStats.totalRounds));
+console.log("Player guesses: " +
+				clcValue(gameSessionStats.playerGuesses));
+console.log("Coins on the edge: " +
+				clcValue(gameSessionStats.coinsOnTheEdge));
+console.log("Games are " + clc.bold.cyanBright("draw") + ": " +
+				clcValue(gameSessionStats.games.draw));
+console.log("Games " + clc.bold.cyanBright("won") + ": " +
+				clcValue(gameSessionStats.games.won));
+console.log("Longest " + clc.bold.cyanBright("win") + " streak: " +
+				clcValue(gameSessionStats.games.winStreak));
+console.log("Flawless " + clc.bold.cyanBright("wins") + ": " +
+				clcValue(gameSessionStats.games.flawlessWins));
+console.log("Games " + clc.bold.cyanBright("lost") + ": " +
+				clcValue(gameSessionStats.games.lost));
+console.log("Longest " + clc.bold.cyanBright("lose") + " streak: " +
+				clcValue(gameSessionStats.games.loseStreak));
+console.log("Total " + clc.bold.cyanBright("loses") + ": " +
+				clcValue(gameSessionStats.games.totalLoses));
+console.log("Games " + clc.bold.cyanBright("win/loss ratio") + ": " +
+				clcValue(gameWonLoseRatio + "%"));
+console.log("Game session end: " +
+				clcValue(gameSessionEndTime));
 
 process.exit(-1);
 

@@ -10,7 +10,6 @@
 	"license": "MIT",
 	"dependencies": {
 		"cli": "^1.0.1",
-		"cli-color": "^1.2.0",
-		"moment": "^2.22.1"
+		"cli-color": "^1.2.0"
 	}
 }
