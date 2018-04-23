@@ -1,0 +1,16 @@
+{
+  "name": "translator",
+  "version": "0.0.1",
+  "description": "A simple translator app (ru<->en) via an http GET request.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yury Timofeev",
+  "license": "MIT",
+  "dependencies": {
+    "cli": "^1.0.1",
+    "cli-color": "^1.2.0",
+    "request": "^2.85.0"
+  }
+}
