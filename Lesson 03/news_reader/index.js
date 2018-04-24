@@ -17,29 +17,30 @@ request('https://www.vesti.ru/news/', (err, res, body) => {
 	}
 	
 	if (res.statusCode !== 200) {
-		console.log('Request status code: ' + res.statusCode);
+		console.log(`Request status code: ${res.statusCode}`);
 		
 		return;
 	}
 	
-	console.log('First ' + cli.options.newsCount + ' news from ' +
-					clc.bold.yellowBright('www.vesti.ru'));
+	console.log(
+		`First ${cli.options.newsCount} news from ` +
+		`${clc.bold.yellowBright('www.vesti.ru')}`);
 	
 	const $ = require('cheerio').load(body);
-	const $newsItems = $('.b-item__inner', '.news-wrapper_');
-	let $newsInnerItem, $newsItem, newsTitle, newsText, newsTime;
 	
-	for (let i = 0; (($newsItem = $newsItems[i]) && i < cli.options.newsCount); i++) {
-		$newsInnerItem = $('.b-item__title a', $newsItem);
-		newsTitle = $newsInnerItem.text().trim();
-		$newsInnerItem = $('.b-item__text', $newsItem);
-		newsText = ($newsInnerItem.length ?
-						$newsInnerItem.text().trim() : '');
-		$newsInnerItem = $('.b-item__time', $newsItem);
-		newsTime = $newsInnerItem.text().trim();
+	$('.b-item__inner', '.news-wrapper_').each((i, $elem) => {
+		// Skip exeeded amount of news items.
+		if (i >= cli.options.newsCount) {
+			return;
+		}
+		
+		const newsTitle = $('.b-item__title a', $elem).text().trim();
+		const newsText = $('.b-item__text', $elem).text().trim();
+		const newsTime = $('.b-item__time', $elem).text().trim();
 
-		console.log('\nNews #' + clc.bold.magentaBright(i + 1) + ' (' +
-						clc.bold.cyanBright(newsTime) + '): ' + clc.bold.yellowBright(newsTitle) +
-						(newsText ? '\n   ' + newsText : ''));
-	}
+		console.log(
+			`\nNews #${clc.bold.magentaBright(i + 1)} (` +
+			`${clc.bold.cyanBright(newsTime)}): ${clc.bold.yellowBright(newsTitle)}` +
+			(newsText ? `\n   ${newsText}` : ``));
+	});
 });
