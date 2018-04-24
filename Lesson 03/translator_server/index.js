@@ -110,7 +110,7 @@ function parseRequest(clientRequest, clientResponse) {
 		url: 'https://translate.yandex.net/api/v1.5/tr.json/translate',
 		form: {
 			key: apiKey,
-			text: decodeURI(queryResult.text),
+			text: decodeURIComponent(queryResult.text),
 			lang: queryResult.lang
 		}
 	}, (err, res, json) => {

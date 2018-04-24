@@ -7,9 +7,9 @@
 		const PORT_MIN = 1024;
 		const PORT_MAX = 65535;
 		const $serverPort = $('#serverPort');
-		const serverPort =  $serverPort[0].value;
+		const serverPort =  $serverPort.val();
 		const $textSource = $('#textSource');
-		let textSource = $textSource[0].value.trim();
+		let textSource = $textSource.val().trim();
 		const invalidFields = [];
 		
 		// Prevent form default submit action.
@@ -34,14 +34,14 @@
 				url: 'http://localhost:' + serverPort,
 				dataType: 'json',
 				data: {
-					lang: $('#lang')[0].value,
+					lang: $('#lang').val(),
 					text: textSource
 				},
 				success: (data) => {
 					if (data.code === 200) {
-						$('#textResult')[0].value = (
+						$('#textResult').val(
 							data.lang === 'ru-en' ?
-							decodeURI(data.text) :
+							decodeURIComponent(data.text) :
 							data.text);
 					}
 				}
