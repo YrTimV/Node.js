@@ -1,0 +1,80 @@
+.title {
+  text-align: center;
+  color: deepskyblue;
+  font-size: 2em;
+  text-shadow: 1px 1px 2px navy;
+  font-family: Arial, sans-serif;
+  font-variant: small-caps; }
+
+.formWrapper,
+.news {
+  margin: 0 auto;
+  width: 40%; }
+
+.buttonsWrapper {
+  display: flex;
+  justify-content: center; }
+
+.button {
+  width: 75px; }
+
+.newsCount {
+  text-align: center;
+  font-family: Arial, sans-serif; }
+
+.noNews {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-variant: small-caps;
+  color: forestgreen;
+  text-shadow: 1px 1px 2px darkgreen; }
+
+.newsCategory {
+  text-align: center;
+  font-family: Arial, sans-serif; }
+
+.newsWrapper {
+  display: grid;
+  grid-template-columns: auto;
+  grid-row-gap: 10px; }
+
+.newsItemWrapper {
+  border: 1px solid black; }
+
+.newsTime {
+  margin: 0;
+  padding: 5px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  background-color: lightgreen; }
+
+.newsTitle {
+  text-align: center;
+  margin: 0 auto;
+  padding: 5px 0;
+  background-color: lightcyan; }
+
+.newsText {
+  margin: 0 auto;
+  padding: 5px;
+  text-indent: 15px;
+  text-align: justify; }
+
+.readMore,
+.mainPage {
+  font-weight: bold;
+  text-decoration: none;
+  color: blue; }
+  .readMore:hover,
+  .mainPage:hover {
+    color: cyan;
+    text-decoration: underline; }
+
+.linkWrapper {
+  margin: 15px;
+  text-align: center; }
+
+.mainPage {
+  font-size: 1.25em; }
+
+/*# sourceMappingURL=main.css.map */

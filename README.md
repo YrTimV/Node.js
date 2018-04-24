@@ -12,5 +12,8 @@ My homework for GeekBrains Node.js course.
 * A *'Heads & Tails'* game log analyzer application. Outputs game statistics of a given file into the console.
 
 ## Lesson 03
-* A news reader application. Fetches some news from the *www.vesti.ru* site and outputs news header into the console.
+* A console news reader application. Fetches some news from the *www.vesti.ru* site and outputs news header into the console.
 * A simple text translation web-service (back-end node.js application and a client web-page). Allows a user to translate some text from *Russian* language into *English* and vice versa.
+
+## Lesson 04
+* A simple news reader web service. Renders a settings form page for the user and fetches some news from the chosen site and category. The user can open the desired news from the news list.
