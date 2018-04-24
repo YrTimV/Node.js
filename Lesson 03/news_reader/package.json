@@ -1,0 +1,17 @@
+{
+  "name": "news_reader",
+  "version": "1.0.0",
+  "description": "A simple news reader.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yury Timofeev",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "cli": "^1.0.1",
+    "cli-color": "^1.2.0",
+    "request": "^2.85.0"
+  }
+}

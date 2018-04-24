@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>A simple Translator</title>
+	<link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+	<div class="formWrapper">
+		<h2 class="title">A simple translator</h2>
+		<form action="#" id="translateForm">
+			<fieldset>
+				<label for="serverPort">Input server port:</label>
+				<input type="number" name="serverPort" id="serverPort" value="3000" min="1024" max="65535" maxlength="5">
+				&nbsp;
+				<span class="hint">(1024 - 65535)</span>
+				<br><br>
+				<label for="lang">Select translation direction:</label>
+				<select name="lang" id="lang">
+					<option value="ru-en">Russian &rarr; English</option>
+					<option value="en-ru">English &rarr; Russian</option>
+				</select>
+				<br><br>
+				<label for="text">Type some text to translate:</label>
+				<div class="textWrapper">
+					<textarea name="textSource" id="textSource" rows="10" placeholder="Привет!"></textarea>
+					<span class="translate">&darr;</span>
+					<textarea name="textResult" id="textResult" rows="10" placeholder="Hello!" readonly></textarea>
+				</div>
+				<div class="buttonsWrapper">
+					<input class="button" type="submit" value="Translate">
+					&nbsp;
+					<input class="button" type="reset" value="Reset">
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<script src="node_modules/jquery/dist/jquery.min.js"></script>
+	<script src="scripts/jquery.textchange.min.js"></script>
+	<script src="scripts/main.js" defer></script>
+	<noscript>
+		Your browser doesn't support JavaScript or JavaScript is disabled in your browser.
+	</noscript>
+</body>
+</html>

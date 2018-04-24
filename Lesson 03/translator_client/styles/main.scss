@@ -1,0 +1,55 @@
+.title {
+	text-align: center;
+	color: deepskyblue;
+	font-size: 2em;
+	text-shadow: 1px 1px 2px navy;
+	font-family: Arial, sans-serif;
+	font-variant: small-caps;
+}
+
+.formWrapper {
+	margin: 0 auto;
+	width: 40%;
+}
+
+.hint {
+	color: gray;
+	font-size: 0.75em;
+}
+
+.invalidField {
+	border: 3px solid red;
+}
+
+.textWrapper {
+	width: 100%;
+	display: grid;
+	margin: 10px auto;
+	grid-template-rows: 1fr 30px 1fr;
+}
+
+#textSource,
+#textResult {
+	width: calc(100% - 5px);
+	margin: none;
+	resize: none;
+}
+
+#textResult {
+	background-color: #ddd;
+}
+
+.translate {
+	text-align: center;
+	line-height: 30px;
+	font-weight: bold;
+}
+
+.buttonsWrapper {
+	display: flex;
+	justify-content: center;
+}
+
+.button {
+	width: 75px;
+}
