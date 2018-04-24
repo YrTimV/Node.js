@@ -29,23 +29,18 @@
 				$field.addClass(INVALID_FIELD_CLASS);
 			}
 		} else {
-			$.ajax({
-				method: 'GET',
-				url: 'http://localhost:' + serverPort,
-				dataType: 'json',
-				data: {
+			$.get(
+				`http://localhost:${serverPort}`,
+				{
 					lang: $('#lang').val(),
 					text: textSource
 				},
-				success: (data) => {
+				(data) => {
 					if (data.code === 200) {
-						$('#textResult').val(
-							data.lang === 'ru-en' ?
-							decodeURIComponent(data.text) :
-							data.text);
+						$('#textResult').val(decodeURIComponent(data.text));
 					}
 				}
-			});
+			);
 		}
 	});
 	
