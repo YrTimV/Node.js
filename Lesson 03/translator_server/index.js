@@ -21,12 +21,10 @@ try {
 	http.createServer(parseRequest).listen(cli.options.serverPort);
 	
 	console.log(
-		'Client requests console logging is ' +
-		clcValue(cli.options.logRequests ? 'on' : 'off'));
+		`Client requests console logging is ` +
+		`${clcValue(cli.options.logRequests ? 'on' : 'off')}`);
 	console.log(
-		'The server is listening on port ' +
-		clcValue(cli.options.serverPort) +
-		'...\n');
+		`The server is listening on port ${clcValue(cli.options.serverPort)}...\n`);
 }
 catch (err) {
 	console.error(err);
@@ -54,21 +52,21 @@ function logRequest(log, params) {
 		now.toLocaleTimeString()) + ']';
 	
 	if (!params) {
-		console.warn(now, 'Request with empty parameters.');
+		console.warn(now, `Request with empty parameters.`);
 	} else if (!params.text || !params.lang) {
-		const paramText = (params.text ? 'text: ' + params.text : '');
-		const paramLang = (params.lang ? 'lang: ' + params.lang : '');
+		const paramText = (params.text ? `text: ${params.text}` : ``);
+		const paramLang = (params.lang ? `lang: ${params.lang}` : ``);
 		
 		console.warn(
-			now, 'Request with invalid parameters.' +
-			(paramText ? '\ntext: ' + paramText : '') +
-			(paramLang ? '\nlang: ' + paramLang : ''));
+			now, `Request with invalid parameters.` +
+			(paramText ? `\ntext: ${paramText}` : ``) +
+			(paramLang ? `\nlang: ${paramLang}` : ``));
 	} else {
 		console.log(
 			now,
-			'Valid request' + (params.code ? ' (code ' + clcValue(params.code) + ')' : '') + '.' +
-			'\ntext: ' + params.text +
-			'\nlang: ' + params.lang);
+			`Valid request ${params.code ? ` (code ${clcValue(params.code)})` : ``}.` +
+			`\ntext: ${params.text}` +
+			`\nlang: ${params.lang}`);
 	}
 }
 
@@ -124,7 +122,7 @@ function parseRequest(clientRequest, clientResponse) {
 			json = JSON.parse(json);
 			queryResult.code = json.code;
 			
-			// Convert text arrain into single text result.
+			// Convert text array element into a single text result.
 			json.text = json.text[0];
 			
 			logRequest(cli.options.logRequests, queryResult);
