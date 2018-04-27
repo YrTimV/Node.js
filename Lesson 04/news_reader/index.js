@@ -1,38 +1,19 @@
-const app = require('express')();
+const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 const consolidate = require('consolidate');
 const request = require('request');
 const path = require('path');
-const fs = require('fs');
 const cheerio = require('cheerio');
-
-app.cli = require('cli');
-app.cli = require('cli');
-app.DEFAULT_PORT = 3000;
-
-// Set command line options.
-app.cli.parse({
-	serverPort: ['p', 'Bind a custom port for requests (1024-65535).', 'int', app.DEFAULT_PORT]
-});
-
-if (app.cli.options.serverPort < 1024 || app.cli.options.serverPort > 65535) {
-	console.warning(
-		`Invalid custom port defined (${app.cli.options.serverPort}). ` +
-		`Fallback to the default port ${app.DEFAULT_PORT}.`
-	);
-	
-	app.cli.options.serverPort = app.DEFAULT_PORT;
-}
-
-// Application settings for internal use.
-app.viewSettings = {
-	pageTitle: `NewsFlash | A simple news fetch service`,
-	mainPage: `http://localhost:${app.cli.options.serverPort}`,
-	newsPage: `http://localhost:${app.cli.options.serverPort}/news`
+const cli = require('cli');
+const appSettings = {
+	DEFAULT_PORT: 3000
 };
-
-app.siteSettings = {
+const viewSettings = {
+	pageTitle: `NewsFlash | A simple news fetch service`
+}
+const siteSettings = {
 	vesti: {
 		name: 'vesti',
 		title: 'vesti.ru',
@@ -43,9 +24,30 @@ app.siteSettings = {
 };
 
 
+// Set command line options.
+cli.parse({
+	serverPort: ['p', 'Bind a custom port for requests (1024-65535).', 'int', appSettings.DEFAULT_PORT]
+});
+
+if (cli.options.serverPort < 1024 || cli.options.serverPort > 65535) {
+	console.warning(
+		`Invalid custom port defined (${cli.options.serverPort}). ` +
+		`Fallback to the default port ${appSettings.DEFAULT_PORT}.`
+	);
+	
+	cli.options.serverPort = appSettings.DEFAULT_PORT;
+}
+
+viewSettings.mainPage = `http://localhost:${cli.options.serverPort}`;
+viewSettings.newsPage = `http://localhost:${cli.options.serverPort}/news`;
+
 app.engine('hbs', consolidate.handlebars);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Handle static content: style and script files.
+app.use('/styles', express.static('styles'));
+app.use('/scripts', express.static('scripts'));
 
 
 // News category parser functions.
@@ -57,14 +59,14 @@ function parseCategoryVesti($) {
 		cid = $elem.attr('href').trim().match(/cid=(\d+)$/);
 		
 		if (cid) {
-			app.siteSettings.vesti.categories.push({
+			siteSettings.vesti.categories.push({
 				cid: cid[1],
 				title: $elem.text()
 			});
 		}
 	});
 	
-	return (app.siteSettings.vesti.categories.length ? app.siteSettings.vesti.categories : null);
+	return (siteSettings.vesti.categories.length ? siteSettings.vesti.categories : null);
 }
 
 const responseData = {
@@ -73,13 +75,12 @@ const responseData = {
 	data: null
 };
 
-
 function fetchNewsVesti(clientReq, clientRes) {
-	let requestUrl = app.siteSettings.vesti.requestUrl;
+	let requestUrl = siteSettings.vesti.requestUrl;
 	
 	if (clientReq.body.newsCategory) {
 		requestUrl =
-			`${app.siteSettings.vesti.articleUrl}section.html?` +
+			`${siteSettings.vesti.articleUrl}section.html?` +
 			`cid=${clientReq.body.newsCategory}`;
 	}
 	
@@ -87,23 +88,21 @@ function fetchNewsVesti(clientReq, clientRes) {
 		const news = [];
 		const newsCount = parseInt(clientReq.body.newsCount);
 		let category;
-
+		
 		if (!err && res.statusCode === 200) {
 			const $ = cheerio.load(body);
 			let $newsWrapper = '.news-wrapper_';
 			
 			if (clientReq.body.newsCategory) {
-				$newsWrapper = '.news-wrapper_section';
+				category = siteSettings.vesti.categories.find((elem) =>
+					elem.cid === clientReq.body.newsCategory);
+				category = (category ? category.title : undefined);
 				
-				app.siteSettings.vesti.categories.forEach((elem) => {
-					if (elem.cid === clientReq.body.newsCategory) {
-						category = elem.title;
-					}
-				});
+				$newsWrapper = '.news-wrapper_section';
 			}
 			
-			$('.b-item__inner', $newsWrapper).each((i, $elem) => {
-				// Skip exeeded amount of news items.
+			// Limit selector with news count, if needed.
+			$(`.b-item__inner`, $newsWrapper).each((i, $elem) => {
 				if (newsCount && i >= newsCount) {
 					return;
 				}
@@ -115,15 +114,15 @@ function fetchNewsVesti(clientReq, clientRes) {
 					title: $title.text().trim(),
 					text: $('.b-item__text', $elem).text().trim(),
 					time: $('.b-item__time', $elem).text().trim(),
-					url: $title.attr('href').trim().replace(/^\//, app.siteSettings.vesti.articleUrl)
+					url: $title.attr('href').trim().replace(/^\//, siteSettings.vesti.articleUrl)
 				});
 			});
 		}
 		
 		clientRes.render('news', {
-			title: app.viewSettings.pageTitle,
-			mainPage: app.viewSettings.mainPage,
-			newsSite: app.siteSettings.vesti.title,
+			title: viewSettings.pageTitle,
+			mainPage: viewSettings.mainPage,
+			newsSite: siteSettings.vesti.title,
 			newsCount: newsCount,
 			newsCategory: category,
 			news: news
@@ -141,11 +140,11 @@ app.post('/news', urlencodedParser, (clientReq, clientRes) => {
 
 // News categories handler.
 app.get('/news/:site', (clientReq, clientRes) => {
-	const newsSite = app.siteSettings[clientReq.params.site];
+	const newsSite = siteSettings[clientReq.params.site];
 	
 	if (!newsSite) {
 		responseData.result = 404;
-		clientRes.send(JSON.stringify(responseData));
+		clientRes.send(responseData);
 		
 		return;
 	}
@@ -187,76 +186,47 @@ app.get('/', (req, res) => {
 		{value: 30, text: '30'},
 		{value: 0, text: 'All'}
 	];
-	let selected;
+	let optElem;
 	
 	// Parse newsCount param.
 	if (req.query.newsCount) {
 		req.query.newsCount = parseInt(req.query.newsCount.trim());
+		optElem = countOptions.find((elem) => elem.value === req.query.newsCount);
 		
-		countOptions.forEach((elem) => {
-			if (elem.value === req.query.newsCount) {
-				elem.selected = true;
-				selected = true;
-			}
-		});
+		// Select param option or default value (20 news count).
+		if (optElem) {
+			optElem.selected = true;
+		} else {
+			countOptions[1].selected = true;
+		}
 	}
 
-	// Default select is 20 news count.
-	if (!selected) {
-		countOptions[1].selected = true;
-	} else {
-		selected = undefined;
-	}
-	
 	// Parse newsSite param.
 	if (req.query.newsSite) {
 		req.query.newsSite = req.query.newsSite.trim();
 		
-		for (const site in app.siteSettings) {
-			if (app.siteSettings[site].name === req.query.newsSite) {
-				app.siteSettings[site].selected = true;
-				selected = true;
-			}
-		}
-	}
+		optElem = siteSettings.find((elem) => elem.name === req.query.newsSite);
 		
-	// Default select is the first site.
-	if (!selected) {
-		app.siteSettings[0].selected = true;
-	} else {
-		selected = undefined;
+		// Select param option or default value (first site).
+		if (optElem) {
+			optElem.selected = true;
+		} else {
+			siteSettings[0].selected = true;
+		}
 	}
 	
 	res.render('newsFlash', {
-		newsPage: app.viewSettings.newsPage,
-		title: app.viewSettings.title,
+		newsPage: viewSettings.newsPage,
+		title: viewSettings.title,
 		countOptions: countOptions,
-		newsSites: app.siteSettings
+		newsSites: siteSettings
 	});
-});
-
-
-// Styles/scripts folder request handlers.
-function sendFile(res, path, fileName) {
-	if (fs.existsSync(path + fileName)) {
-		res.sendFile(path + fileName);
-	} else {
-		renderDefaultPage(res);
-	}
-}
-
-app.get('/styles/:file', (req, res) => {
-	sendFile(res, `${__dirname}/styles/`, req.params.file.trim());
-});
-
-app.get('/scripts/:file', (req, res) => {
-	sendFile(res, `${__dirname}/scripts/`, req.params.file.trim());
 });
 
 
 // Default request handler.
 function renderDefaultPage(res) {
-	res.render('default', {mainPage: app.viewSettings.mainPage});
+	res.render('default', {mainPage: viewSettings.mainPage});
 }
 
 app.get('*', (undefined, res) => {
@@ -264,6 +234,6 @@ app.get('*', (undefined, res) => {
 });
 
 // Binding and starting of the server app.
-app.listen(app.cli.options.serverPort, () => {
-	console.info(`Server is listening on port ${app.cli.options.serverPort}...`);
+app.listen(cli.options.serverPort, () => {
+	console.info(`Server is listening on port ${cli.options.serverPort}...`);
 });
