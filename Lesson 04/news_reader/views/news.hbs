@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{{title}}</title>
+	<link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+	<div class="news">
+		<h1 class="title">News from {{newsSite}}</h1>
+	{{#if news}}
+		{{#if newsCount}}
+		<h3 class="newsCount">First {{newsCount}} news</h3>
+		{{/if}}
+		{{#if newsCategory}}
+		<h3 class="newsCategory">News category: «{{newsCategory}}»</h3>
+		{{/if}}
+		<div class="newsWrapper">
+		{{#each news}}
+			<div class="newsItemWrapper">
+				<p class="newsTime">#{{num}} ({{time}})</p>
+				<p class="newsTitle">{{title}}</p>
+				{{#if text}}
+				<p class="newsText">{{text}}</p>
+				{{/if}}
+				&nbsp;<a href="{{url}}" target="_blank" class="readMore">Read more...</a>
+			</div>
+		{{/each}}
+		</div>
+	{{else}}
+		<h3 class="noNews">There are no news to display.</h3>
+	{{/if}}
+	</div>
+	<div class="linkWrapper">
+		<a href="{{mainPage}}" class="mainPage">Back to main page</a>
+	</div>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/main.js"></script>
+	<noscript>
+		Your browser doesn't support JavaScript or JavaScript is disabled in your browser.
+	</noscript>
+</body>
+</html>
