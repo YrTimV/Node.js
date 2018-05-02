@@ -1,9 +1,4 @@
-function formatDateTime(time) {
-	return (
-		time ?
-		time.toLocaleDateString() + ' ' + time.toLocaleTimeString() :
-		time);
-}
+const moment = require('moment');
 
 const Users = {
 	list: function (pool, res, render) {
@@ -15,17 +10,19 @@ const Users = {
 			}
 			
 			connection.query(
-				'SELECT * FROM ?? ORDER BY ??',
-				['users', 'name'],
+				'SELECT * FROM users ORDER BY name',
 				(err, rows) => {
 					if (err) {
 						console.error(err);
 					} else {
-						rows.map((value) => {
-							value.create_time = formatDateTime(value.create_time);
+						const formattedRows = rows.map((value) => {
+							value.create_time =
+								moment(value.create_time).format('YYYY/MM/DD HH:mm:ss');
+
+							return value;
 						});
 						
-						render(res, rows);
+						render(res, formattedRows);
 					}
 					
 					connection.release();

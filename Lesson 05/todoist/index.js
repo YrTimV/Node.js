@@ -2,7 +2,6 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const urlencodedParser = bodyParser.urlencoded({extended: false});
 const consolidate = require('consolidate');
 const path = require('path');
 const cli = require('cli');
@@ -15,7 +14,6 @@ const connectionPool = sql.createPool(config.dbConnection);
 const viewSettings = {
 	// Default view settings.
 };
-
 
 
 // Parse command line options.
@@ -45,36 +43,43 @@ app.use('/packages', express.static(path.join(__dirname, 'assets/packages')));
 app.use('/scripts', express.static(path.join(__dirname, 'assets/scripts')));
 app.use('/styles', express.static(path.join(__dirname, 'assets/styles')));
 
-function listUsers(clientRes) {
-	Users.list(connectionPool, clientRes, (res, rows) => {
+// Route requests handlers.
+app.get('/users', (clientReq, clientRes) => {
+	Users.list(connectionPool, clientRes, (err, rows) => {
 		clientRes.render('users', {
 			title: 'Todoist',
 			menuItems: Menu(viewSettings.mainPage),
 			userData: rows
 		});
 	});
-}
-
-app.get('/users', (clientReq, clientRes) => {
-	listUsers(clientRes);
 });
 
-function listTasks(pool, clientRes) {
-	Tasks.list(pool, clientRes, (res, rows) => {
-		clientRes.render('tasks', {
-			title: 'Todoist',
-			menuItems: Menu(viewSettings.mainPage),
-			postUrl: `${viewSettings.mainPage}/tasks/submit`,
-			taskData: rows
-		});
+function listTasks(res, rows) {
+	res.render('tasks', {
+		title: 'Todoist',
+		menuItems: Menu(viewSettings.mainPage),
+		postUrl: `${viewSettings.mainPage}/tasks/submit`,
+		taskData: rows
 	});
 }
 
 app.get('/tasks', (clientReq, clientRes) => {
-	listTasks(connectionPool, clientRes);
+	Tasks.list(connectionPool, clientRes, (err, result) => {
+		listTasks(clientRes, result);
+	});
 });
 
-app.post('/tasks/submit', urlencodedParser, (clientReq, clientRes) => {
+app.post('/tasks/*', bodyParser.urlencoded({extended: false}));
+
+function sendResponse(err, response, result) {
+	if (err) {
+		console.error(err);
+	}
+
+	response.json(result);
+}
+
+app.post('/tasks/submit', (clientReq, clientRes) => {
 	const task = {
 		id: parseInt(clientReq.body.taskId),
 		user_id: parseInt(clientReq.body.taskUserId),
@@ -84,21 +89,20 @@ app.post('/tasks/submit', urlencodedParser, (clientReq, clientRes) => {
 	};
 
 	if (task.id) {
-		Tasks.update(task, connectionPool, clientRes, listTasks);
+		Tasks.update(task, connectionPool, clientRes, sendResponse);
 	} else {
-		delete task.id;
-		Tasks.add(task, connectionPool, clientRes, listTasks);
+		Tasks.add(task, connectionPool, clientRes, sendResponse);
 	}
 });
 
-app.post('/tasks/complete', urlencodedParser, (clientReq, clientRes) => {
+app.post('/tasks/complete', (clientReq, clientRes) => {
 	Tasks.complete(
-		parseInt(clientReq.body.taskId), connectionPool, clientRes, listTasks);
+		parseInt(clientReq.body.taskId), connectionPool, clientRes, sendResponse);
 });
 
-app.post('/tasks/delete', urlencodedParser, (clientReq, clientRes) => {
+app.post('/tasks/delete', (clientReq, clientRes) => {
 	Tasks.delete(
-		parseInt(clientReq.body.taskId), connectionPool, clientRes, listTasks);
+		parseInt(clientReq.body.taskId), connectionPool, clientRes, sendResponse);
 });
 
 app.get('/', (clientReq, clientRes) => {
@@ -108,13 +112,9 @@ app.get('/', (clientReq, clientRes) => {
 	});
 });
 
-// Default request handler.
-function renderDefaultPage(res) {
-	res.render('default', {mainPage: viewSettings.mainPage});
-}
-
+// Default route request handler.
 app.get('*', (undefined, res) => {
-	renderDefaultPage(res);
+	res.render('default', {mainPage: viewSettings.mainPage});
 });
 
 // Binding and starting of the server app.

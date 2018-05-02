@@ -33,7 +33,7 @@
 				<th class="thead">Actions</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody id="tbody">
 		{{#each taskData}}
 			<tr data-id="{{this.id}}">
 				<td class="taskId">{{this.id}}</td>
@@ -64,7 +64,7 @@
 		<form action="{{postUrl}}" method="post" id="taskForm">
 			<fieldset>
 				<input type="hidden" name="taskId" id="taskId">
-				<input type="hidden" name="taskUserId" value="1" required>
+				<input type="hidden" name="taskUserId" id="taskUserId" value="1" required>
 				<label for="taskTitle">Task title:</label>
 				<input type="text" name="taskTitle" id="taskTitle" required>
 				<br><br>
