@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{title}}</title>
+	<link rel="stylesheet" href="packages/jquery-ui/jquery-ui.min.css">
+	<link rel="stylesheet" href="packages/jquery-ui/jquery-ui.structure.min.css">
+	<link rel="stylesheet" href="packages/jquery-ui/jquery-ui.theme.min.css">
+	<link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+	
+	<ul id="menu">
+		<li class="ui-widget-header"><div>Main menu</div></li>
+		{{#each menuItems}}
+			<li><div><a href="{{this.menuItemLink}}" class="menuItemLink">{{this.menuItem}}</a></div></li>
+		{{/each}}
+	</ul>
+
+	<h2>Task data</h2>
+	<table class="tableWrapper">
+		<thead>
+			<tr>
+				<th class="thead">Id</th>
+				<th class="thead">User</th>
+				<th class="thead">Priority</th>
+				<th class="thead">Creation time</th>
+				<th class="thead">Modify time</th>
+				<th class="thead">Complete time</th>
+				<th class="thead">Title</th>
+				<th class="thead">Text</th>
+				<th class="thead">Actions</th>
+			</tr>
+		</thead>
+		<tbody id="tbody">
+		{{#each taskData}}
+			<tr data-id="{{this.id}}">
+				<td class="taskId">{{this.id}}</td>
+				<td class="taskUser" data-userId="{{this.user_id}}">{{this.user}}</td>
+				<td class="taskPriority" data-priorityId="{{this.priority_id}}">{{this.priority}}</td>
+				<td class="taskCreateTime">{{this.create_time}}</td>
+				<td class="taskModifyTime">{{this.modify_time}}</td>
+				<td class="taskCompleteTime">{{this.complete_time}}</td>
+				<td class="taskTitle">{{this.title}}</td>
+				<td class="taskText">{{this.text}}</td>
+				<td>
+					<div class="buttonWrapper">
+					{{#if this.complete_time}}
+					{{else}}
+						<button id="editTask" onclick="editTask({{this.id}});">Edit</button>
+						<button id="completeTask" onclick="completeTask({{this.id}});">Complete</button>
+					{{/if}}
+						<button id="deleteTask" onclick="deleteTask({{this.id}});">Delete</button>
+					</div>
+				</td>
+			</tr>
+		{{/each}}
+		</tbody>
+	</table>
+	<br>
+	<button id="addTask">Add task</button>
+	<div class="taskFormWrapper">
+		<form action="{{postUrl}}" method="post" id="taskForm">
+			<fieldset>
+				<input type="hidden" name="taskId" id="taskId">
+				<input type="hidden" name="taskUserId" id="taskUserId" value="1" required>
+				<label for="taskTitle">Task title:</label>
+				<input type="text" name="taskTitle" id="taskTitle" required>
+				<br><br>
+				<label for="taskPriorityId">Task priority:</label>
+				<select name="taskPriorityId" id="taskPriorityId" required>
+					<option value="1">Low</option>
+					<option value="2" selected>Normal</option>
+					<option value="3">High</option>
+				</select>
+				<br><br>
+				<label for="taskText">Task text:</label>
+				<textarea name="taskText" id="taskText" cols="40" rows="7"></textarea> <br><br>
+				<input type="submit" id="taskSubmit">
+				<input type="reset">
+			</fieldset>
+		</form>
+	</div>
+	<script src="/packages/jquery/jquery.min.js"></script>
+	<script src="/packages/jquery-ui/jquery-ui.min.js"></script>
+	<script src="/scripts/main.js"></script>
+	<noscript>
+		Your browser doesn't support JavaScript or JavaScript is disabled in your browser.
+	</noscript>
+</body>
+</html>
