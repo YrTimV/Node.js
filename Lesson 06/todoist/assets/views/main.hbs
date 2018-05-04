@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{title}}</title>
+	<link rel="stylesheet" href="packages/jquery-ui/jquery-ui.min.css">
+	<link rel="stylesheet" href="packages/jquery-ui/jquery-ui.structure.min.css">
+	<link rel="stylesheet" href="packages/jquery-ui/jquery-ui.theme.min.css">
+	<link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+	
+	<ul id="menu">
+		<li class="ui-widget-header"><div>Main menu</div></li>
+	{{#each menuItems}}
+		<li><div><a href="{{this.menuItemLink}}" class="menuItemLink">{{this.menuItem}}</a></div></li>
+	{{/each}}
+	{{#if user}}
+		<li class="ui-widget-header"><div>User: {{user}}</div></li>
+		<li><div><a href="/logout" class="menuItemLink">Logout</a></div></li>
+	{{/if}}
+	</ul>
+
+	<script src="packages/jquery/jquery.min.js"></script>
+	<script src="packages/jquery-ui/jquery-ui.min.js"></script>
+	<script src="scripts/main.js"></script>
+	<noscript>
+		Your browser doesn't support JavaScript or JavaScript is disabled in your browser.
+	</noscript>
+</body>
+</html>

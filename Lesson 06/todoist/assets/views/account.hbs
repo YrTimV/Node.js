@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{title}}</title>
+	<link rel="stylesheet" href="packages/jquery-ui/jquery-ui.min.css">
+	<link rel="stylesheet" href="packages/jquery-ui/jquery-ui.structure.min.css">
+	<link rel="stylesheet" href="packages/jquery-ui/jquery-ui.theme.min.css">
+	<link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+	<ul id="menu">
+		<li class="ui-widget-header"><div>Main menu</div></li>
+		{{#each menuItems}}
+			<li><div><a href="{{this.menuItemLink}}" class="menuItemLink">{{this.menuItem}}</a></div></li>
+		{{/each}}
+	</ul>
+	
+	<div class="registerFormWrapper">
+		<h1>My account</h1>
+	{{#if invalidPassword}}
+		<p class="invalidPass">Incorrect password for <span class="account">{{account}}</span>.</p>
+	{{else if alreadyRegistered}}
+		<p class="invalidPass">Account <span class="account">{{account}}</span> is already registered.</p>
+	{{else}}
+		<p class="loginRegister">Login or register</p>
+	{{/if}}
+		<br>
+    <form action="/account" method="post" id="registerForm">
+			<label for="username">Username:</label>
+			<input type="text" name="username" id="username" placeholder="Type user name" required>
+			<br><br>
+			<label for="password">Password:</label>
+			<input type="password" name="password" id="password" placeholder="Type password" required>
+			<br><br>
+			<input type="submit" value="Login">
+			&nbsp;
+			<input type="submit" value="Register" id="register">
+		</form>
+	</div>
+	<script src="packages/jquery/jquery.min.js"></script>
+	<script src="packages/jquery-ui/jquery-ui.min.js"></script>
+	<script src="scripts/account.js"></script>
+</body>
+</html>
