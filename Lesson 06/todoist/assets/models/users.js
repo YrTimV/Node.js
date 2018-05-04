@@ -15,14 +15,11 @@ const Users = {
 					if (err) {
 						console.error(err);
 					} else {
-						const formattedRows = rows.map((value) => {
-							value.create_time =
-								moment(value.create_time).format('YYYY/MM/DD HH:mm:ss');
-
-							return value;
-						});
-						
-						render(res, formattedRows);
+						render(res, rows.map((value) => ({
+							create_time:
+								moment(value.create_time).format('YYYY/MM/DD HH:mm:ss'),
+								...value
+						})));
 					}
 					
 					connection.release();

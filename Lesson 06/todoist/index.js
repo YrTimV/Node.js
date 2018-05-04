@@ -78,8 +78,8 @@ const authNotNeeded = (req, res, next) => {
 
 // Parse requests only without auth.
 app.use('/account', authNotNeeded);
-app.get('/account', (clientReq, clientRes) => {
-		clientRes.render('account', {
+app.get('/account', (req, res) => {
+		res.render('account', {
 			title: 'My account @ Todoist',
 			menuItems: Menu(viewSettings.mainPage)
 		});
@@ -89,37 +89,38 @@ app.post('/account', passport.authenticate('local', {
 	failureRedirect: '/account'
 }));
 
-app.post('/register', (clientReq, clientRes) => {
+app.post('/register', (req, res) => {
 	Account.register(
-		new Account({username: clientReq.body.username}), clientReq.body.password, (err, user) => {
-		if (err) {
-				return clientRes.render('account', {
-					user: user,
-					alreadyRegistered: true
-				});
-		}
+		new Account({username: req.body.username}),
+		req.body.password, (err, user) => {
+			if (err) {
+					return res.render('account', {
+						user: user,
+						alreadyRegistered: true
+					});
+			}
 
-		passport.authenticate('local')(clientReq, clientRes, () => {
-			clientRes.redirect('/tasks');
+			passport.authenticate('local')(req, res, () => {
+				res.redirect('/tasks');
+			});
 		});
-	});
 });
 
-app.get('/logout', (clientReq, clientRes) => {
-	clientReq.logout();
-	clientRes.redirect('/');
+app.get('/logout', (req, res) => {
+	req.logout();
+	res.redirect('/');
 });
 
 // Parse requests only with valid auth.
 app.use('/tasks', authNeeded);
-app.get('/tasks', (clientReq, clientRes) => {
-	Tasks.list(connectionPool, clientRes, (err, result) => {
-		clientRes.render('tasks', {
+app.get('/tasks', (req, res) => {
+	Tasks.list(connectionPool, res, (err, result) => {
+		res.render('tasks', {
 			title: 'Todoist',
 			menuItems: Menu(viewSettings.mainPage),
 			postUrl: `${viewSettings.mainPage}/tasks/submit`,
 			taskData: result,
-			user: clientReq.user.username
+			user: req.user.username
 		});
 	});
 });
@@ -132,41 +133,42 @@ function sendResponse(err, response, result) {
 	response.json(result);
 }
 
-app.post('/tasks/submit', (clientReq, clientRes) => {
-	const task = {
-		id: parseInt(clientReq.body.taskId),
-		user_id: parseInt(clientReq.body.taskUserId),
-		priority_id: parseInt(clientReq.body.taskPriorityId),
-		title: clientReq.body.taskTitle,
-		text: clientReq.body.taskText
-	};
+app.post('/tasks/submit', (req, res) => {
+	const {
+		taskId: id,
+		taskUserId: user_id,
+		taskPriorityId: priority_id,
+		taskTitle: title,
+		taskText: text
+	} = req.body;
+	const task = {id, user_id, priority_id, title, text};
 
 	if (task.id) {
-		Tasks.update(task, connectionPool, clientRes, sendResponse);
+		Tasks.update(task, connectionPool, res, sendResponse);
 	} else {
-		Tasks.add(task, connectionPool, clientRes, sendResponse);
+		Tasks.add(task, connectionPool, res, sendResponse);
 	}
 });
 
-app.post('/tasks/complete', (clientReq, clientRes) => {
+app.post('/tasks/complete', (req, res) => {
 	Tasks.complete(
-		parseInt(clientReq.body.taskId), connectionPool, clientRes, sendResponse);
+		req.body.taskId, connectionPool, res, sendResponse);
 });
 
-app.post('/tasks/delete', (clientReq, clientRes) => {
+app.post('/tasks/delete', (req, res) => {
 	Tasks.delete(
-		parseInt(clientReq.body.taskId), connectionPool, clientRes, sendResponse);
+		req.body.taskId, connectionPool, res, sendResponse);
 });
 
-app.get('/', (clientReq, clientRes) => {
-	clientRes.render('main', {
+app.get('/', (req, res) => {
+	res.render('main', {
 		title: 'Todoist',
 		menuItems: Menu(viewSettings.mainPage)
 	});
 });
 
 // Default route request handler.
-app.get('*', (undefined, res) => {
+app.get('*', (req, res) => {
 	res.render('default', {mainPage: viewSettings.mainPage});
 });
 
