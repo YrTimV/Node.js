@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
 
-// moment(value.create_time).format('YYYY/MM/DD HH:mm:ss');
 // Task schema.
 const taskSchema = new mongoose.Schema({
 	username: {type: String, required: true},

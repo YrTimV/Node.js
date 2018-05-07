@@ -2,9 +2,6 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const cli = require('cli');
 const config = require('./config');
-const session = require('cookie-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
