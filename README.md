@@ -22,4 +22,7 @@ My homework for GeekBrains Node.js course.
 * A simple task manager web service. Renders a page with task list with dates, title and description, where a user can add new tasks, edit, complete or delete entered tasks.
 
 ## Lesson 06
-* Further development of a simple task manager web service. Introduced a login/register web page. A user cannot view tasks if he is not authorized. The user must register first and login to view the task page.
+* Further development of the task manager web service. Introduced a login/register web page. A user cannot view tasks if he is not authorized. The user must register first and login to view the task page.
+
+## Lesson 07
+* Transformed the task manager web service into a pure REST API model, remade user and task management into a CRUD model and implemented access token via user authorization. DB storage engine is now fully MongoDB (migrated from MySQL).
