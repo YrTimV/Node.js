@@ -2,51 +2,14 @@ const mongoose = require('mongoose');
 
 // Task schema.
 const taskSchema = new mongoose.Schema({
-	username: {type: String, required: true},
+	userId: {type: mongoose.Schema.Types.ObjectId, required: true},
 	createDate: {type: Date, required: true},
 	updateDate: Date,
 	completeDate: Date,
-	priority: {type: String, enum: ['low', 'normal', 'high'], required: true},
+	priority: {type: String, enum: ['low', 'normal', 'high'], required: true, lowercase: true},
+	title: {type: String, required: true},
 	text: String
 });
 
-// Task params.
-const params = {
-	username: {name: 'username', regexp: /^[\w|\d]{3,}$/},
-	priority: {name: 'priority', regexp: /^(low|normal|high)$/i},
-	title: {name: 'title', regexp: /^\w+$/},
-	text: {name: 'text', regexp: /.*/}
-};
-
-// Param sets for different actions.
-const commonParams = [
-	params.username, params.priority, params.title, params.text
-];
-
-// Validate task params.
-function validateParams(paramSet, body, allowEmpty = false) {
-	const invalidParams = [];
-
-	// Required params validation.
-	paramSet.forEach((param) => {
-		const value = (body[param.name] ? body[param.name] : '');
-
-		if (!(allowEmpty && !value) && !param.regexp.test(value.trim())) {
-			invalidParams.push(param.name);
-		}
-	});
-
-	return invalidParams;
-}
-
-
 // Module export definitions.
-module.exports = {
-	params: {
-		common: commonParams
-	},
-	fn: {
-		validateParams
-	},
-	model: mongoose.model('Task', taskSchema)
-};
+module.exports = mongoose.model('Task', taskSchema);
