@@ -1,7 +1,7 @@
 {
   "name": "todoist",
   "version": "0.0.1",
-  "description": "A simple tasklist app with a MySQL data storage engine and a simple user auth mechanism.",
+  "description": "A simple tasklist REST API web service with a MongoDB data storage engine and a simple user auth mechanism.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
