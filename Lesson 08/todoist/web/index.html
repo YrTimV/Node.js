@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<style>
+		body {
+			font-family: Arial, Helvetica, sans-serif;
+		}
+		.roomJoined {
+			color: blue;
+			font-weight: bold;
+		}
+		.messages {
+			border: 1px solid black;
+			min-height: 50px;
+			display: none;
+		}
+		.active {
+			border: 3px groove black;
+		}
+		p {
+			margin: 3px 10px;
+		}
+	</style>
+	<title>Web socket demo</title>
+	<script src="http://localhost:8000/socket.io/socket.io.js"></script>
+	<script src="jquery.min.js"></script>
+	<script src="main.js"></script>
+</head>
+<body>
+	<fieldset id="rooms">
+		<legend>API rooms</legend>
+		<span data-roomName="users">Users</span> <button class="roomAction" data-roomName="users">Join</button>
+		<br> <br>
+		<div class="messages" id="msgUsers" data-roomName="users"></div>
+		<br> <br>
+		<span data-roomName="tasks">Tasks</span> <button class="roomAction" data-roomName="tasks">Join</button>
+		<br> <br>
+		<div class="messages" id="msgTasks" data-roomName="tasks"></div>
+	</fieldset>
+</body>
+</html>
