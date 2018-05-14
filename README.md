@@ -26,3 +26,6 @@ My homework for GeekBrains Node.js course.
 
 ## Lesson 07
 * Transformed the task manager web service into a pure REST API model, remade user and task management into a CRUD model and implemented access token via user authorization. DB storage engine is now fully MongoDB (migrated from MySQL).
+
+## Lesson 08
+* Implemented web sockets into the app to connect with different clients. Added a simple web interface for a few rooms (**users** and **tasks**), message lists and room actions (**join** or **leave**). All subscribed clients receive events on actions (list, fetch info, register, create, delete and so on), corresponding to the room.
