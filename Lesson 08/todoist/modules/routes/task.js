@@ -2,9 +2,9 @@
 const { check, validationResult } = require('express-validator/check');
 
 // Import project modules.
-const common = require('./common');
-const sockets = require('./sockets');
-const Task = require('../models/task');
+const common = require('../common');
+const sockets = require('../sockets');
+const Task = require('../../models/task');
 const modelRoomName = 'tasks';
 
 

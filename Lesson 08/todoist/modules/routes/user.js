@@ -3,9 +3,9 @@ const { check, validationResult } = require('express-validator/check');
 const jwt = require('jsonwebtoken');
 
 // Import project modules.
-const common = require('./common');
-const sockets = require('./sockets');
-const User = require('../models/user');
+const common = require('../common');
+const sockets = require('../sockets');
+const User = require('../../models/user');
 const modelRoomName = 'users';
 
 

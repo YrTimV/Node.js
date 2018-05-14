@@ -7,8 +7,7 @@ const mongoose = require('mongoose');
 // Import project modules.
 const config = require('./modules/config');
 const common = require('./modules/common');
-const routes_user = require('./modules/routes_user');
-const routes_task = require('./modules/routes_task');
+const routes = require('./modules/routes/');
 const sockets = require('./modules/sockets');
 
 
@@ -22,15 +21,9 @@ app.use(bodyParser.json());
 // MongoDB connection.
 mongoose.connect(config.connection.connectionString);
 
-routes_user(app);
-routes_task(app);
-
-// Default route request handler.
-// Sends 404 error status.
-app.all('*', (req, res) => {
-	res.status(404).json();
-});
-
+routes.user(app);
+routes.task(app);
+routes.common(app);
 
 // Binding and starting of the server app.
 sockets.fn.init();
